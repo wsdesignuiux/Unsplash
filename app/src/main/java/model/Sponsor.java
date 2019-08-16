@@ -4,7 +4,9 @@ package model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Sponsor {
+import java.io.Serializable;
+
+public class Sponsor implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -35,7 +37,7 @@ public class Sponsor {
     private String bio;
     @SerializedName("location")
     @Expose
-    private Object location;
+    private String location;
     @SerializedName("links")
     @Expose
     private Links__ links;
@@ -130,11 +132,11 @@ public class Sponsor {
         this.bio = bio;
     }
 
-    public Object getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(Object location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 

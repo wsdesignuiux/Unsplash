@@ -1,11 +1,12 @@
 
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AllPhotosModel {
+public class AllPhotosModel implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -30,7 +31,7 @@ public class AllPhotosModel {
     private Object description;
     @SerializedName("alt_description")
     @Expose
-    private Object altDescription;
+    private String altDescription;
     @SerializedName("urls")
     @Expose
     private Urls urls;
@@ -40,15 +41,6 @@ public class AllPhotosModel {
     @SerializedName("categories")
     @Expose
     private List<Object> categories = null;
-    @SerializedName("sponsored")
-    @Expose
-    private Boolean sponsored;
-    @SerializedName("sponsored_by")
-    @Expose
-    private Object sponsoredBy;
-    @SerializedName("sponsored_impressions_id")
-    @Expose
-    private Object sponsoredImpressionsId;
     @SerializedName("likes")
     @Expose
     private Integer likes;
@@ -121,11 +113,11 @@ public class AllPhotosModel {
         this.description = description;
     }
 
-    public Object getAltDescription() {
+    public String getAltDescription() {
         return altDescription;
     }
 
-    public void setAltDescription(Object altDescription) {
+    public void setAltDescription(String altDescription) {
         this.altDescription = altDescription;
     }
 
@@ -151,30 +143,6 @@ public class AllPhotosModel {
 
     public void setCategories(List<Object> categories) {
         this.categories = categories;
-    }
-
-    public Boolean getSponsored() {
-        return sponsored;
-    }
-
-    public void setSponsored(Boolean sponsored) {
-        this.sponsored = sponsored;
-    }
-
-    public Object getSponsoredBy() {
-        return sponsoredBy;
-    }
-
-    public void setSponsoredBy(Object sponsoredBy) {
-        this.sponsoredBy = sponsoredBy;
-    }
-
-    public Object getSponsoredImpressionsId() {
-        return sponsoredImpressionsId;
-    }
-
-    public void setSponsoredImpressionsId(Object sponsoredImpressionsId) {
-        this.sponsoredImpressionsId = sponsoredImpressionsId;
     }
 
     public Integer getLikes() {
@@ -217,7 +185,4 @@ public class AllPhotosModel {
         this.sponsorship = sponsorship;
     }
 
-    public AllPhotosModel(String id) {
-        this.id = id;
-    }
 }

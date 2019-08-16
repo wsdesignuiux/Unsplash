@@ -4,7 +4,9 @@ package model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Sponsorship {
+import java.io.Serializable;
+
+public class Sponsorship implements Serializable {
 
     @SerializedName("impressions_id")
     @Expose

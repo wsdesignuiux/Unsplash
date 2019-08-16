@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:elevation="30dp"
-    android:orientation="vertical"
-    app:cardCornerRadius="13.3sp">
+    android:layout_marginLeft="5.5dp"
+    android:layout_marginRight="5.5dp"
+    android:layout_marginBottom="11dp"
+    android:outlineAmbientShadowColor="#000000"
+    android:outlineSpotShadowColor="#000000"
+    android:transitionName="@string/blue_name"
+    app:cardCornerRadius="13dp"
+    app:cardElevation="6.5dp">
 
-    <LinearLayout
+    <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/all_photos"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_launcher_background" />
 
-        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/all_photos"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_launcher_background" />
-
-    </LinearLayout>
 </androidx.cardview.widget.CardView>
+

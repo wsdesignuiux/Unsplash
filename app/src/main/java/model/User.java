@@ -4,7 +4,9 @@ package model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -26,16 +28,16 @@ public class User {
     private String lastName;
     @SerializedName("twitter_username")
     @Expose
-    private String twitterUsername;
+    private Object twitterUsername;
     @SerializedName("portfolio_url")
     @Expose
-    private String portfolioUrl;
+    private Object portfolioUrl;
     @SerializedName("bio")
     @Expose
-    private String bio;
+    private Object bio;
     @SerializedName("location")
     @Expose
-    private String location;
+    private Object location;
     @SerializedName("links")
     @Expose
     private Links_ links;
@@ -106,35 +108,35 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getTwitterUsername() {
+    public Object getTwitterUsername() {
         return twitterUsername;
     }
 
-    public void setTwitterUsername(String twitterUsername) {
+    public void setTwitterUsername(Object twitterUsername) {
         this.twitterUsername = twitterUsername;
     }
 
-    public String getPortfolioUrl() {
+    public Object getPortfolioUrl() {
         return portfolioUrl;
     }
 
-    public void setPortfolioUrl(String portfolioUrl) {
+    public void setPortfolioUrl(Object portfolioUrl) {
         this.portfolioUrl = portfolioUrl;
     }
 
-    public String getBio() {
+    public Object getBio() {
         return bio;
     }
 
-    public void setBio(String bio) {
+    public void setBio(Object bio) {
         this.bio = bio;
     }
 
-    public String getLocation() {
+    public Object getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Object location) {
         this.location = location;
     }
 

@@ -1,22 +1,33 @@
 package e.wolfsoft1.unsplash;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.app.ProgressDialog;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import adapter.AllPhotosAdapter;
+import adapter.SearchPhotosAdapter;
 import model.AllPhotosModel;
+import model.Result;
+import model.RetroPhoto;
 import network.AllPhotosNetwork;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,36 +37,58 @@ import retrofit2.http.Url;
 public class MainActivity extends AppCompatActivity {
 
     private AllPhotosAdapter photosAdapter;
+    private SearchPhotosAdapter searchPhotosAdapter;
     private ProgressDialog progressDialog;
     private StaggeredGridLayoutManager layoutManager;
     private boolean isLoading;
     private List<AllPhotosModel> allPhotsModelList;
+    private List<Result> searchPhotoList;
+
     private int page = 1;
     private int i;
     private int pastVisibleItems;
-    private int previouspage = 1;
+
     RecyclerView recyclerView;
+    private int previouspage;
+    private ProgressBar progressbar;
+    private EditText searchPhotos;
+    ImageButton search;
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText searchPhotos = findViewById(R.id.search_photos);
+        searchPhotos = findViewById(R.id.search_photos);
         searchPhotos.setCursorVisible(false);
 
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("Loading....");
         progressDialog.show();
 
+        search = findViewById(R.id.search);
+
+        searchPhotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+//                searchPhotos.setCursorVisible(true);
+
+                searchPhotos.requestFocus();
+
+                // to open forcefully keyboard
+                ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            }
+        });
 
         allPhotsModelList = new ArrayList<>();
+        searchPhotoList = new ArrayList<>();
 
         recyclerView = findViewById(R.id.all_photos_recy);
-        photosAdapter = new AllPhotosAdapter(allPhotsModelList, this);
-        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(photosAdapter);
+
+        loadAllPhotos();
 
         isLoading = true;
         getData(page);
@@ -64,13 +97,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                Log.e("aaa", "Scroller//// " + allPhotsModelList.size());
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
 
                 StaggeredGridLayoutManager manager =
                         (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
@@ -89,12 +120,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if ((visibleItemCount + pastVisibleItems) >= totalItemCount
-                        && !isLoading && (page > previouspage)) {
+                        && !isLoading && previouspage < page) {
                     isLoading = true;
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             getData(page);
 
                         }
@@ -102,41 +132,84 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-//
-//                int visibleItemCount = layoutManager.getChildCount();
-//                int totalItemCount = layoutManager.getItemCount();
-//                int[] firstVisibleItems = layoutManager.findFirstVisibleItemPositions(null);
-//                int pastVisibleItems = 0;
-//                if (firstVisibleItems != null && firstVisibleItems.length > 0) {
-//                    pastVisibleItems = firstVisibleItems[0];
-//                }
-//
-//                if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !isLoading) {
-//                    if (!isLoading) {
-//                        isLoading = true;
-//
-//                        Toast.makeText(MainActivity.this, "Call"+String.valueOf(i), Toast.LENGTH_SHORT).show();
-//                        i++;
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                getData(page);
-//                            }
-//                        }, 50);
-//                    }
-//                }
+            }
+        });
 
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                page = 1;
+                searchPhoto();
+                allPhotsModelList.clear();
+                previouspage = 0;
+
+                if (searchPhotos.getText().toString().isEmpty() && searchPhotos.getText().toString() == null) {
+                    Toast.makeText(MainActivity.this, "No results Found", Toast.LENGTH_SHORT).show();
+                } else {
+                    getSearchData(page);
+                }
+
+
+            }
+        });
+
+
+        searchPhotos.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.length() == 0) {
+                    loadAllPhotos();
+                    searchPhotoList.clear();
+                }
             }
         });
 
     }
 
-    private void getData(final int pageno) {
+    private void loadAllPhotos() {
+
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setItemViewCacheSize(50);
+//        recyclerView.setDrawingCacheEnabled(true);
+//        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+        photosAdapter = new AllPhotosAdapter(allPhotsModelList, this);
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(photosAdapter);
+
+    }
+
+    private void searchPhoto() {
+        recyclerView.setAdapter(null);
+        searchPhotosAdapter = new SearchPhotosAdapter(searchPhotoList, MainActivity.this);
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(searchPhotosAdapter);
+
+    }
+
+
+    private void getData(int pageno) {
 
         GetService getService = AllPhotosNetwork.getRetrofitResponse().create(GetService.class);
         Call<List<AllPhotosModel>> call = getService.getAllPhotos(GetService.CLIENT_ID, String.valueOf(pageno));
 
-//        Log.e("TAG " , "URL" + call.toString());
 //        method is Asynchronous which means you can move on to another task before it finishes
 
         call.enqueue(new Callback<List<AllPhotosModel>>() {
@@ -145,55 +218,69 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<AllPhotosModel>> call, Response<List<AllPhotosModel>> response) {
 
                 progressDialog.dismiss();
-
                 List<AllPhotosModel> model = response.body();
 
-//                Log.e("aaa", "Image URL " + model.get(i).getUrls().getThumb());
-//                for (int i = 0; i < model.size(); i++) {
-//                    Log.e("aaa", "Image URL " + model.get(i).getUrls().getThumb());
-//                    Log.e("aaa", "get ID " + model.get(i).getId());
-//                    Log.e("aaa", "getDescription " + model.get(i).getDescription());
-                    if (model != null) {
+                if (model != null && previouspage < page) {
 
-                        if (allPhotsModelList.size() == 0) {
-                            allPhotsModelList.addAll(model);
-                            photosAdapter.notifyDataSetChanged();
-                            Url url;
-                            previouspage = page;
+                    if (allPhotsModelList.size() == 0) {
+                        allPhotsModelList.addAll(model);
+                        photosAdapter.notifyDataSetChanged();
+                        previouspage = page;
+                        page++;
 
-//                            page++;
-                            page = pageno;
+                    } else {
 
-                            Toast.makeText(MainActivity.this, page, Toast.LENGTH_SHORT).show();
-//                            Toast.makeText(MainActivity.this, String.valueOf(pageno), Toast.LENGTH_SHORT).show();
-//                            page++;
-//                            Log.e("aaa", "Array Size " + allPhotsModelList.size());
-
-                        } else {
-                            int previousposition = allPhotsModelList.size();
-                            allPhotsModelList.addAll(model);
-                            photosAdapter.notifyItemChanged(previousposition, model.size());
-                            previouspage = page;
-//                            page++;
-//                            Log.e("aaa", String.valueOf(page));
-//                            Log.e("aaa", "Array Size " + allPhotsModelList.size());
-                        }
-                        isLoading = false;
-//                        photosAdapter = new AllPhotosAdapter(allPhotsModelList, MainActivity.this);
-//                        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-//                        recyclerView.setLayoutManager(layoutManager);
-//                        recyclerView.setAdapter(photosAdapter);
-
+                        int previousposition = allPhotsModelList.size();
+                        allPhotsModelList.addAll(model);
+                        photosAdapter.notifyItemChanged(previousposition, model.size());
+                        previouspage = page;
+                        page++;
                     }
+                    isLoading = false;
+
                 }
-//            }
+            }
 
             @Override
             public void onFailure(Call<List<AllPhotosModel>> call, Throwable t) {
+
                 progressDialog.dismiss();
                 Toast.makeText(MainActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    private void getSearchData(int pageno) {
+
+        final String keyword = searchPhotos.getText().toString().trim();
+
+        GetService getServiceSearch = AllPhotosNetwork.getRetrofitResponse().create(GetService.class);
+        Call<RetroPhoto> call = getServiceSearch.getSearchList(GetService.CLIENT_ID, String.valueOf(pageno), keyword);
+
+        call.enqueue(new Callback<RetroPhoto>() {
+            @Override
+            public void onResponse(Call<RetroPhoto> call, Response<RetroPhoto> response) {
+
+                RetroPhoto model = response.body();
+                List<Result> result = model.getResults();
+                searchPhotoList.addAll(result);
+
+                searchPhotosAdapter.notifyDataSetChanged();
+                if (result != null && previouspage < page) {
+                    isLoading = false;
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<RetroPhoto> call, Throwable t) {
+
+                progressDialog.dismiss();
+                Toast.makeText(MainActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
 
 }

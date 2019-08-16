@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/search_toolbar"
-    app:contentInsetStart="0dp"
     android:layout_marginLeft="16.3sp"
-    android:layout_marginRight="16.3dp"
     android:layout_marginTop="16.03dp"
-    android:orientation="vertical">
+    android:layout_marginRight="16.3dp"
+    android:orientation="vertical"
+    app:contentInsetStart="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,40 +27,35 @@
             android:id="@+id/search_linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/gray_rect"
             android:layout_marginLeft="12dp"
-            android:orientation="horizontal"
-            android:padding="13.5dp">
+            android:background="@drawable/gray_rect"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/search_photos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:maxLines="1"
                 android:background="#00000000"
-                android:drawableRight="@drawable/ic_search"
+                android:layout_gravity="center"
                 android:hint="Search Photo"
+                android:padding="5.5dp"
                 android:textColor="#000000"
+                android:layout_marginLeft="12.5dp"
+                android:textSize="16sp"
                 android:textColorHint="#000000"
                 android:textStyle="bold" />
 
-
-            <!--<androidx.appcompat.widget.SearchView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:iconifiedByDefault="false"-->
-            <!--app:searchIcon="@null"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="#00000000"-->
-            <!--android:textAlignment="textStart"/>-->
-
-            <!--<ImageView-->
-            <!--android:layout_width="30dp"-->
-            <!--android:layout_height="25dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:padding="5dp"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:src="@drawable/ic_search" />-->
+            <ImageButton
+                android:id="@+id/search"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:padding="10dp"
+                android:scaleType="fitXY"
+                android:background="#00000000"
+                android:src="@drawable/ic_search" />
 
         </LinearLayout>
     </LinearLayout>

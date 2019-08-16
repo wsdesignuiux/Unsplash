@@ -4,17 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:orientation="vertical"
     tools:context=".Profile">
 
     <include layout="@layout/toolbar_back" />
 
+    <TextView
+        android:id="@+id/related_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Profile related images"
+        android:textColor="#000000"
+        android:textSize="19dp"
+        android:visibility="gone" />
+
     <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/profile_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
+        android:background="@drawable/circle_shadow"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher_background"
+        android:padding="1dp"
+        android:src="@drawable/placeholder"
         app:riv_oval="true" />
 
     <LinearLayout
@@ -25,6 +39,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/name_of_profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Harley-Davidson"
@@ -34,6 +49,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2.3dp"
@@ -51,50 +67,79 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="20dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_location" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="4.6dp"
-            android:layout_marginRight="11.8dp"
-            android:text="Milwaukee, WI"
-            android:textColor="#80222222"
-            android:textSize="12.3sp" />
+            android:gravity="right"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/location_icon"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_location" />
+
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4.6dp"
+                android:layout_marginRight="11.8dp"
+                android:layout_weight="1"
+                android:text="Milwaukee, WI"
+                android:textColor="#80222222"
+                android:textSize="12.3sp" />
+
+        </LinearLayout>
 
         <View
+            android:id="@+id/viewline"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="#80222222" />
 
-        <ImageView
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_marginLeft="11.8dp"
-            android:src="@drawable/ic_internet" />
-
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="4.6dp"
-            android:text="harley-davidson.com"
-            android:textColor="#80222222"
-            android:textSize="12.3sp" />
+            android:gravity="left"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/web_icon"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_marginLeft="11.8dp"
+                android:src="@drawable/ic_internet" />
+
+            <TextView
+                android:id="@+id/website_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="4.6dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="harley-davidson.com"
+                android:textColor="#80222222"
+                android:textSize="12.3sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <TextView
+        android:id="@+id/bio_of_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_gravity="center"
-        android:layout_marginLeft="4.6dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="21.4dp"
+        android:layout_marginRight="20dp"
+        android:textAlignment="center"
         android:text="All for Freedom, Freedom for All."
         android:textColor="#000000"
         android:textSize="12.3sp"

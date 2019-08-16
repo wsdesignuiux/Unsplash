@@ -16,6 +16,6 @@ public interface GetService {
     Call<List<AllPhotosModel>>getAllPhotos(@Query("client_id") String key, @Query("page") String page);
 
     @GET("/search/photos")
-    Call<List<RetroPhoto>>getSearchList(@Query("client_id") String key, @Query("page") String page, @Query("query") String query);
+    Call<RetroPhoto>getSearchList(@Query("client_id") String key, @Query("page") String page, @Query("query") String query);
 
 }

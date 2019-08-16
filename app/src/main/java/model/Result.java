@@ -1,11 +1,12 @@
 
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result {
+public class Result implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -27,7 +28,7 @@ public class Result {
     private String color;
     @SerializedName("description")
     @Expose
-    private Object description;
+    private String description;
     @SerializedName("alt_description")
     @Expose
     private String altDescription;
@@ -104,11 +105,11 @@ public class Result {
         this.color = color;
     }
 
-    public Object getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Object description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

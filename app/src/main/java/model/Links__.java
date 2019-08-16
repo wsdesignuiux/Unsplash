@@ -4,7 +4,9 @@ package model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Links__ {
+import java.io.Serializable;
+
+public class Links__ implements Serializable {
 
     @SerializedName("self")
     @Expose
